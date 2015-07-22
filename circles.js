@@ -55,7 +55,7 @@ var CircleMachine = (function(){
   }
 
   function setBaseCircle(){
-    var circle = new Circle(50, 'white');
+    var circle = new Circle(canvasHeight / 2 - 100, 'white');
     circle.xPos = canvasWidth / 2;
     circle.yPos = canvasHeight / 2;
   }
