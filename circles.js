@@ -6,6 +6,7 @@ var CircleMachine = (function(){
       ctx2 = canvas.getContext('2d'),
       canvasWidth,
       canvasHeight,
+      parentCircle;
 
       circleArray = [];
 
@@ -27,15 +28,40 @@ var CircleMachine = (function(){
     this.color = color;
     this.xPos;
     this.yPos;
-    
+    this.angle = -Math.PI/2;
+    this.rotationSpeed = 0; 
+    this.trackSpeed = 0;
+    this.trackLocation = -Math.PI/2;
+    this.parentCircle;
+         
     this.draw = function(){
-      ctx1.save();
+      this.penX = this.xPos + this.radius * Math.cos(this.angle);
+      this.penY = this.yPos + this.radius * Math.sin(this.angle);
 
+      ctx1.save();
       ctx1.beginPath();
       ctx1.strokeStyle = this.color;
       ctx1.arc(this.xPos, this.yPos, this.radius, 0, 2 * Math.PI);
+      ctx1.moveTo(this.xPos, this.yPos);
+      ctx1.lineTo(this.penX, this.penY);
       ctx1.stroke();
       ctx1.restore();
+      
+      this.angle += this.rotationSpeed;
+      this.trackLocation += trackSpeed;
+
+      if(parentCircle = this.parentCircle){
+         
+      } 
+    }
+
+    this.createChildCircle = function(radius, color){
+      var newCircle = new Circle(radius, color);
+      newCircle.xPos = this.xPos;
+      newCircle.yPos = this.yPos - this.radius;
+      newCircle.rotationSpeed = 0.01;
+      newCircle.trackSpeed = 0.01;
+      newCircle.parentCircle = this;
     } 
 
     circleArray.push(this);
@@ -52,18 +78,20 @@ var CircleMachine = (function(){
       }
 
     ctx1.restore();
+    requestAnimationFrame(render);
   }
 
   function setBaseCircle(){
-    var circle = new Circle(canvasHeight / 2 - 100, 'white');
-    circle.xPos = canvasWidth / 2;
-    circle.yPos = canvasHeight / 2;
+    var baseCircle = new Circle(canvasHeight / 2 - 100, 'white');
+    baseCircle.xPos = canvasWidth / 2;
+    baseCircle.yPos = canvasHeight / 2;
+    baseCircle.createChildCircle(50, 'red'); 
   }
 
   function init(){
     setCanvasDimensions();
     setBaseCircle();
-    render();
+    requestAnimationFrame(render);
   }
   
   init();    
