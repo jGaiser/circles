@@ -61,14 +61,16 @@ var CircleMachine = (function(){
       ctx1.save();
       ctx1.beginPath();
       ctx1.strokeStyle = this.color;
-      //ctx1.arc(this.xPos, this.yPos, this.radius, 0, 2 * Math.PI);
+      ctx1.arc(this.xPos, this.yPos, this.radius, 0, 2 * Math.PI);
       ctx1.moveTo(this.xPos, this.yPos);
       if(this.parentCircle){
-      //  ctx1.lineTo(this.penX, this.penY);
+        ctx1.lineTo(this.penX, this.penY);
       };
       ctx1.stroke();
-      ctx1.restore();
-      
+      ctx1.restore();  
+    }
+
+    this.step = function(){
       this.angle += this.rotationSpeed;
       this.trackLocation += this.trackSpeed;
 
@@ -97,11 +99,12 @@ var CircleMachine = (function(){
       return newCircle;
     } 
 
-    circleArray.push(this);
-     
+    circleArray.push(this); 
   }
+//---TODO: July 27, 2105
+  function tick(){
 
-  
+  }
 
   function renderCircles(){
     ctx1.save();
