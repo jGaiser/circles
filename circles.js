@@ -19,7 +19,7 @@ var CircleMachine = (function(){
       circleArray = [],
       penArray = [],
 
-  var BG_COLOR = 'rgb(50, 50, 50)';
+  BG_COLOR = 'rgb(50, 50, 50)';
   
   function setCanvasDimensions(){
     canvasWidth = window.innerWidth;
@@ -143,7 +143,7 @@ var CircleMachine = (function(){
   }  
 
   function setBaseCircle(){
-    var baseCircle = new Circle(canvasHeight / 2 - 100, 'white');
+    var baseCircle = new Circle(canvasHeight / 2 - 100, 'darkgray');
     baseCircle.xPos = canvasWidth / 2;
     baseCircle.yPos = canvasHeight / 2;
   }
