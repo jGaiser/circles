@@ -5,17 +5,19 @@ var CircleMachine = (function(){
 
   var canvas = document.getElementById('viewport'),
       canvas2 = document.getElementById('drawSurface'),
+
       ctx1 = canvas.getContext('2d'),
       ctx2 = canvas2.getContext('2d'),
+
       canvasWidth,
       canvasHeight,
       parentCircle,
-      currentPen;
+      currentPen,
     
-      circleNum = Math.floor(Math.random()*5);
+      circleNum = Math.floor(Math.random()*5),
 
-      circleArray = [];
-      penArray = [];
+      circleArray = [],
+      penArray = [],
 
   var BG_COLOR = 'rgb(50, 50, 50)';
   
@@ -38,7 +40,20 @@ var CircleMachine = (function(){
     this.prevY;
 
     this.color = color;
-
+    
+    this.draw = function(){
+      ctx2.save();
+        ctx2.beginPath();
+        ctx2.strokeStyle = this.color;
+        
+        if(typeof(this.prevX) === "number"){
+          ctx2.moveTo(this.prevX, this.prevY);
+          ctx2.lineTo(this.xPos, this.yPos);
+          ctx2.stroke();
+        }  
+      ctx2.restore();
+    }  
+ 
     penArray.push(this);
   }
 
@@ -68,6 +83,8 @@ var CircleMachine = (function(){
       };
       ctx1.stroke();
       ctx1.restore();  
+
+      this.step();
     }
 
     this.step = function(){
@@ -101,48 +118,20 @@ var CircleMachine = (function(){
 
     circleArray.push(this); 
   }
-//---TODO: July 27, 2105
+
   function tick(){
+    ctx1.clearRect(0,0,canvasWidth,canvasHeight);  
+    for(var i = 0; i < circleArray.length; i++){
+      circleArray[i].draw(); 
+    }
 
-  }
+    for(var n = 0; n < penArray.length; n++){
+      penArray[n].draw(); 
+    }
 
-  function renderCircles(){
-    ctx1.save();
-      ctx1.fillStyle = BG_COLOR;
-      ctx1.fillRect(0,0,canvasWidth, canvasHeight); 
-      
-      for(i = 0; i < circleArray.length; i++){
-        circleArray[i].draw()
-      }
-
-    ctx1.restore();
-
-    renderPens();
-
-    requestAnimationFrame(renderCircles);
+    requestAnimationFrame(tick);
   }
   
-  function renderPens(){
-    ctx2.save();
-      
-      for(i = 0; i < penArray.length; i++){
-        ctx2.save();
-        ctx2.beginPath();
-        pen = penArray[i];
-        ctx2.strokeStyle = pen.color;
-        
-        if(typeof(pen.prevX) === "number"){
-          ctx2.moveTo(pen.prevX, pen.prevY);
-          ctx2.lineTo(pen.xPos, pen.yPos);
-          
-          ctx2.stroke();
-        }  
-        ctx2.restore();
-      }
-
-    ctx2.restore(); 
-  }
-
   function generateCircles(){
     for(i = 0; i < circleNum; i++){
       var randum = Math.floor(Math.random() * circleArray.length);
@@ -163,7 +152,7 @@ var CircleMachine = (function(){
     setCanvasDimensions();
     setBaseCircle();
     generateCircles();
-    requestAnimationFrame(renderCircles);
+    requestAnimationFrame(tick);
   }
   
   init();    
