@@ -5,3 +5,7 @@ body{
 canvas{
   position: absolute;
 }
+
+#viewport{
+  background: rgb(30, 30, 30);
+}
