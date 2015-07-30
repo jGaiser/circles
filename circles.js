@@ -18,6 +18,7 @@ var CircleMachine = (function(){
 
       circleArray = [],
       penArray = [],
+      oscillatorArray = [];
 
   BG_COLOR = 'rgb(50, 50, 50)';
   
@@ -57,6 +58,20 @@ var CircleMachine = (function(){
     penArray.push(this);
   }
 
+  function Oscillator(){
+    this.count = 0;
+    this.frequency = 0.05;
+    this.value = 0;
+    
+    this.step = function(){
+      this.value = parseFloat(Math.sin(this.count)).toFixed(2);
+      this.count += this.frequency;
+      console.log(this.value);
+    }
+
+    oscillatorArray.push(this);
+  }
+
   function Circle(radius, color){
     this.radius = radius;
     this.color = color;
@@ -76,10 +91,10 @@ var CircleMachine = (function(){
       ctx1.save();
       ctx1.beginPath();
       ctx1.strokeStyle = this.color;
-      ctx1.arc(this.xPos, this.yPos, this.radius, 0, 2 * Math.PI);
+      //ctx1.arc(this.xPos, this.yPos, this.radius, 0, 2 * Math.PI);
       ctx1.moveTo(this.xPos, this.yPos);
       if(this.parentCircle){
-        ctx1.lineTo(this.penX, this.penY);
+       // ctx1.lineTo(this.penX, this.penY);
       };
       ctx1.stroke();
       ctx1.restore();  
@@ -88,8 +103,8 @@ var CircleMachine = (function(){
     }
 
     this.step = function(){
-      this.angle += this.rotationSpeed;
-      this.trackLocation += this.trackSpeed;
+      this.angle += this.rotationSpeed; 
+      this.trackLocation += this.trackSpeed * oscillatorArray[0].value;
 
       if(parentCircle = this.parentCircle){
         this.xPos = parentCircle.xPos + parentCircle.radius * Math.cos(this.trackLocation);
@@ -107,8 +122,8 @@ var CircleMachine = (function(){
       var newCircle = new Circle(radius, color);
       newCircle.xPos = this.xPos;
       newCircle.yPos = this.yPos - this.radius;
-      newCircle.rotationSpeed = Math.random()*0.2;
-      newCircle.trackSpeed = Math.random()*0.2;
+      newCircle.rotationSpeed = +(Math.random()*0.2).toFixed(2);
+      newCircle.trackSpeed = +(Math.random()*0.2).toFixed(2);
       
       newCircle.parentCircle = this;
       newCircle.pen = new Pen(color);
@@ -121,6 +136,7 @@ var CircleMachine = (function(){
 
   function tick(){
     ctx1.clearRect(0,0,canvasWidth,canvasHeight);  
+
     for(var i = 0; i < circleArray.length; i++){
       circleArray[i].draw(); 
     }
@@ -128,18 +144,24 @@ var CircleMachine = (function(){
     for(var n = 0; n < penArray.length; n++){
       penArray[n].draw(); 
     }
+  
+    for(var m = 0; m < oscillatorArray.length; m++){
+      oscillatorArray[m].step();
+    }
 
     requestAnimationFrame(tick);
   }
   
   function generateCircles(){
-    for(i = 0; i < circleNum; i++){
+    for(i = 0; i < 1; i++){
       var randum = Math.floor(Math.random() * circleArray.length);
       var randum2 = Math.floor(Math.random() * 150);
       var rColor = "rgb(" + Math.floor(Math.random()*255) + "," + Math.floor(Math.random()*255) + "," + Math.floor(Math.random()*255) + ")";
       console.log(rColor);
       circleArray[randum].createChildCircle(randum2, rColor);  
     }
+    
+    var osc = new Oscillator();
   }  
 
   function setBaseCircle(){
